@@ -57,3 +57,4 @@ export type SEO = {
     description?: string;
   };
 };
+export type TableParams = { page: number; size: number; search: string; sort: string };
