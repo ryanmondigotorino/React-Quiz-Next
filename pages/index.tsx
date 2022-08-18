@@ -85,7 +85,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   if (cookies.authToken && cookies.token) {
     const token = jwtDecode<GeneratedToken>(cookies.authToken);
-
     try {
       if (Date.now() >= token.exp * 1000) return { props };
       if (CLIENT_URL !== token.source) return { props };
