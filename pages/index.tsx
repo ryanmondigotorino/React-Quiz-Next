@@ -1,6 +1,5 @@
 import React from 'react';
 import type { NextPage, GetServerSideProps } from 'next';
-import axios from 'axios';
 import * as cookie from 'cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -16,6 +15,7 @@ import AuthWrapper from 'components/AuthWrapper';
 import Input from 'components/Input';
 import { setAuthorization } from 'utilities/auth';
 import Button from 'components/Button';
+import { api } from 'utilities/auth';
 
 const CLIENT_URL = process.env.APP_URL;
 
@@ -29,7 +29,7 @@ const SignIn: NextPage<Props> = ({ seo }) => {
   const onSignInSubmit: OnSubmit<FieldValues> = async (value) => {
     try {
       setLoading(true);
-      const { data } = await axios.post('/api/auth/sign-in', { ...value });
+      const { data } = await api().post('/api/auth/sign-in', { ...value });
       if (data?.data) {
         setAuthorization(data.data);
         router.push('/user');
@@ -89,13 +89,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       if (Date.now() >= token.exp * 1000) return { props };
       if (CLIENT_URL !== token.source) return { props };
 
-      const { data } = await axios({
-        method: 'GET',
-        url: `${CLIENT_URL}/api/user`,
-        params: {
-          id: token.userId,
-        },
-      });
+      const { data } = await api(cookies.authToken).get(`${CLIENT_URL}/api/user`, { params: { id: token.userId }});
 
       if (data?.data?.[0]?.id === token.userId) {
         return {

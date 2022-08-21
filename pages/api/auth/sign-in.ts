@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import nc from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { User } from 'interfaces';
+import { User } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import generateToken from 'tokens/generate';

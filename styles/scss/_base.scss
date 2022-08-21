@@ -128,3 +128,57 @@ p {
 .d-none {
   display: none !important;
 }
+
+.separator {
+  border-bottom: 1px solid #b9bbc2;
+  padding-bottom: 25px;
+}
+
+.flex {
+  &-1 {
+    flex: 1;
+  }
+  &-2 {
+    flex: 2;
+  }
+  &-5 {
+    flex: 5;
+  }
+  &-6 {
+    flex: 6;
+  }
+}
+
+.p {
+  &-3 {
+    padding: 1rem !important;
+  }
+  &-03 {
+    padding: 0 1rem !important;
+  }
+  &-20 {
+    padding: 20px;
+  }
+  &r-15 {
+   padding-right: 15px; 
+  }
+  &l-15 {
+   padding-left: 15px; 
+  }
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #101820;
+  thead th {
+    vertical-align: bottom;
+    padding: 0.75rem;
+    text-align: start;
+  }
+  td {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+}

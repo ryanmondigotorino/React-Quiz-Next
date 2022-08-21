@@ -66,3 +66,27 @@ export const Text = {
   Title,
   SubTitle,
 };
+
+
+const TransparentButton = styled.button`
+  background: transparent;
+  width: 100%;
+  height: auto;
+  border: none;
+  transition: 0.3s;
+  color: ${theme.white};
+  font-size: 17px;
+  font-weight: 400;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+`;
+
+export const Button = {
+  Transparent: TransparentButton,
+};

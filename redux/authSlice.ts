@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { User } from 'interfaces';
+import { User } from '@prisma/client';
 
 type InitialState = {
   user: User | null;

@@ -1,10 +1,11 @@
 import React from 'react';
 import type { NextPage, GetServerSideProps } from 'next';
 import Link from 'next/link';
+import * as cookie from 'cookie';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import NextSeo from 'components/Utilities/Next-seo';
-import type { SEO, FormFields } from 'interfaces';
+import type { SEO, FormFields, GeneratedToken } from 'interfaces';
 import { Container } from 'styles/styled-components/auth.styled';
 import { Text } from 'styles/styled-components/global.styled';
 import { signUpFields } from 'utilities/fields';
@@ -13,6 +14,9 @@ import { FieldValues, OnSubmit } from 'react-hook-form/dist/types';
 import AuthWrapper from 'components/AuthWrapper';
 import Input from 'components/Input';
 import Button from 'components/Button';
+import { api } from 'utilities/auth';
+
+const CLIENT_URL = process.env.APP_URL;
 
 type Props = { seo: SEO };
 
@@ -25,7 +29,7 @@ const Home: NextPage<Props> = ({ seo }) => {
   const onSignUpSubmit: OnSubmit<FieldValues> = async (value) => {
     try {
       setLoader(true);
-      const { data } = await axios.post('/api/auth/sign-up', { ...value });
+      const { data } = await api().post('/api/auth/sign-up', { ...value });
       if (data?.meta?.status === 'success') {
         router.replace('/');
       }
@@ -86,12 +90,35 @@ const Home: NextPage<Props> = ({ seo }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const props: Props = {
     seo: {
       mainseo: { title: `${process.env.APP_NAME} | Sign Up` },
     },
   };
+
+  const cookies = cookie.parse(req.headers?.cookie || '');
+
+  if (cookies.authToken && cookies.token) {
+    const token = jwtDecode<GeneratedToken>(cookies.authToken);
+    try {
+      if (Date.now() >= token.exp * 1000) return { props };
+      if (CLIENT_URL !== token.source) return { props };
+
+      const { data } = await api(cookies.authToken).get(`${CLIENT_URL}/api/user`, { params: { id: token.userId }});
+
+      if (data?.data?.[0]?.id === token.userId) {
+        return {
+          redirect: {
+            destination: '/user',
+            permanent: false,
+          },
+        };
+      }
+    } catch (error) {
+      return { props };
+    }
+  }
 
   return { props };
 };

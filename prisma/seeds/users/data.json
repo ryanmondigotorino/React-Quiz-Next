@@ -6,6 +6,7 @@
     "email": "ryanmondigotorino@gmail.com",
     "password": "123456789",
     "createdAt": "2022-08-19T01:21:25.312Z",
-    "updatedAt": "2022-08-19T01:21:25.312Z"
+    "updatedAt": "2022-08-19T01:21:25.312Z",
+    "deletedAt": null
   }
 ]

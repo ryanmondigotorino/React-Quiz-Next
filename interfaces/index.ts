@@ -1,10 +1,3 @@
-type PredefinedTables = {
-  id: string;
-  createdAt?: string | number | Date;
-  updatedAt?: string | number | Date;
-  deletedAt?: string | number | Date;
-};
-
 export type UserValidation = 'firstName' | 'lastName' | 'email';
 
 type ValidationProps = {
@@ -27,12 +20,6 @@ export type Field = {
   UserValidation: UserValidation;
 };
 
-export interface User extends PredefinedTables {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password?: string;
-}
 
 export type FormFields = {
   id: number;
@@ -58,3 +45,5 @@ export type SEO = {
   };
 };
 export type TableParams = { page: number; size: number; search: string; sort: string };
+
+export type Pagination = { self: number; first: number; prev: number; next: number; last: number };
