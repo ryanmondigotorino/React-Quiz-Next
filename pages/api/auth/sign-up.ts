@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import nc from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-import type { User, Field } from 'interfaces';
+import { PrismaClient, User } from '@prisma/client';
+import type { Field } from 'interfaces';
 import { hash } from 'bcryptjs';
 
 const handler = nc();

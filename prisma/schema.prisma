@@ -16,7 +16,44 @@ model User {
   lastName        String
   email           String    @unique
   password        String?
+  quiz            Quiz[]
   createdAt       DateTime? @default(now())
   updatedAt       DateTime? @default(now())
+  deletedAt       DateTime?
+}
+
+model Quiz {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User?           @relation(fields: [userId], references: [id])
+  quizQuestions   QuizQuestions[]
+  title           String
+  status          Int             @default(0) // 0 draft | 1 published
+  url             String
+  createdAt       DateTime?       @default(now())
+  updatedAt       DateTime?       @default(now())
+  deletedAt       DateTime?
+}
+
+model QuizQuestions {
+  id              String          @id @default(cuid())
+  question        String
+  type            Boolean         // false single question true multiple question
+  quizId          String
+  quiz            Quiz?           @relation(fields: [quizId], references: [id])
+  quizChoices     QuizChoices[]
+  createdAt       DateTime?       @default(now())
+  updatedAt       DateTime?       @default(now())
+  deletedAt       DateTime?
+}
+
+model QuizChoices {
+  id              String          @id @default(cuid())
+  description     String
+  isAnswer        Boolean
+  quizQuestionsId String
+  quizQuestions   QuizQuestions?  @relation(fields: [quizQuestionsId], references: [id])
+  createdAt       DateTime?       @default(now())
+  updatedAt       DateTime?       @default(now())
   deletedAt       DateTime?
 }

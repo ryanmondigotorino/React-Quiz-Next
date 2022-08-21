@@ -2,6 +2,7 @@ import nc from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { TableParams } from 'interfaces';
 import { PrismaClient } from '@prisma/client';
+import { authorized } from 'utilities/guard';
 
 const handler = nc();
 const prisma = new PrismaClient();
@@ -21,6 +22,9 @@ interface QueryParams extends TableParams {
 
 handler.get('/api/user', async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    const auth = await authorized(req);
+    if (!auth?.id) return res.status(403).json({ message: 'Unauthorized Access (Invalid token credentials)'});
+  
     const params: QueryParams = JSON.parse(JSON.stringify(req.query));
 
     const pageNumber: number = params?.page || typeof params.page === 'number' ? Number(params?.page) : 1;

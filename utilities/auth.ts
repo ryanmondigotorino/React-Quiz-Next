@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import axios, { AxiosInstance } from 'axios';
 import type { GeneratedToken } from 'interfaces';
 
 const CLIENT_URL = process.env.APP_URL;
@@ -26,4 +27,19 @@ const removeTokens = () => {
   Cookies.remove('token');
 };
 
-export { setAuthorization, authenticated, removeTokens };
+const api: (token?: string) => AxiosInstance = (token) => {
+  const tokenParams = token || Cookies.get('authToken');
+  const headers = tokenParams ? {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${tokenParams}`
+    }
+  } : {};
+
+  return axios.create({
+    baseURL: CLIENT_URL,
+    ...headers
+  });
+}
+
+export { setAuthorization, authenticated, removeTokens, api };

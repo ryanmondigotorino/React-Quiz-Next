@@ -6,7 +6,6 @@ const ContainerWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: auto;
-  margin-bottom: 100px;
 `;
 
 const ContainerContent = styled.div`
