@@ -6,8 +6,8 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   middleware: getDefaultMiddleware({
     serializableCheck: {
-      ignoredActionPaths: ['payload.children', 'payload.header'],
-      ignoredPaths: ['systemApp.modal.children', 'systemApp.modal.header'],
+      ignoredActionPaths: ['payload.children', 'payload.header', 'payload.btn'],
+      ignoredPaths: ['systemApp.modal.children', 'systemApp.modal.header', 'systemApp.alert.btn'],
     },
   }),
 });

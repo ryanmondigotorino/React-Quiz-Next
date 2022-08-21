@@ -2,6 +2,7 @@ import nc from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { TableParams } from 'interfaces';
+import { QuizPost } from 'interfaces/quiz';
 import { authorized } from 'utilities/guard';
 import cuid from 'cuid';
 
@@ -87,22 +88,6 @@ handler.get('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
  * post request for creating a quiz
  */
 
-interface Choices {
-  description: string;
-  isAnswer: boolean;
-}
-
-interface Questions {
-  question: string;
-  type: boolean;
-  choices: Array<Choices>;
-}
-
-interface QuizPost {
-  title: string;
-  questions: Array<Questions>
-}
-
 handler.post('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const auth = await authorized(req);
@@ -130,11 +115,14 @@ handler.post('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
     const urlBase = cuid();
     const urlSlug = urlBase.slice(urlBase.length - 6);
 
+    const quizId = cuid();
+
     const quiz = await prisma.quiz.create({
       data: {
+        id: quizId,
         title: request.title,
         userId: auth.id,
-        status: 0,
+        status: 1,
         url: urlSlug,
         quizQuestions: {
           create: request.questions.map((question) => ({
@@ -146,6 +134,7 @@ handler.post('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
                 id: cuid(),
                 description: choice.description,
                 isAnswer: choice.isAnswer,
+                quizId: quizId,
               }))
             }
           }))
@@ -160,6 +149,47 @@ handler.post('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
       data: quiz,
     });
   } catch (error) {
+    return res.status(500).json({ message: JSON.stringify(error) });
+  }
+});
+
+interface DeleteProps { id: string };
+
+handler.delete('api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const auth = await authorized(req);
+    if (!auth?.id) return res.status(403).json({ message: 'Unauthorized Access (Invalid token credentials)'});
+
+    const request: DeleteProps = JSON.parse(JSON.stringify(req.query));
+
+    const findQuiz = await prisma.quiz.findFirst({
+      where: { id: request.id }
+    });
+
+    if (!findQuiz?.id) return res.status(403).json({ message: 'Unauthorized Access (Quiz does not exist)' });
+
+    await prisma.quizChoices.deleteMany({
+      where: { quizId: findQuiz.id },
+    });
+  
+    await prisma.quizQuestions.deleteMany({
+      where: { quizId: findQuiz.id },
+    });
+
+    await prisma.quiz.delete({
+      where: { id: findQuiz.id },
+    });
+
+    return res.status(201).json({
+      meta: {
+        status: 'success',
+      },
+      data: {
+        message: 'Quiz successfully deleted!'
+      }
+    });
+  } catch (error) {
+    console.log({ error });
     return res.status(500).json({ message: JSON.stringify(error) });
   }
 });

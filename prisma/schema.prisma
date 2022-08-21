@@ -27,6 +27,7 @@ model Quiz {
   userId          String
   user            User?           @relation(fields: [userId], references: [id])
   quizQuestions   QuizQuestions[]
+  quizChoices     QuizChoices[]
   title           String
   status          Int             @default(0) // 0 draft | 1 published
   url             String
@@ -53,6 +54,8 @@ model QuizChoices {
   isAnswer        Boolean
   quizQuestionsId String
   quizQuestions   QuizQuestions?  @relation(fields: [quizQuestionsId], references: [id])
+  quizId          String
+  quiz            Quiz?           @relation(fields: [quizId], references: [id])
   createdAt       DateTime?       @default(now())
   updatedAt       DateTime?       @default(now())
   deletedAt       DateTime?

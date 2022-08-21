@@ -17,9 +17,20 @@ export default styled.button`
   border: 1px solid ${theme.gray[700]};
   outline: none;
   outline-color: transparent;
+  border: 1px solid transparent;
+  &.clear {
+    border: 1px solid ${theme.gray[700]};
+    color: ${theme.gray[700]};
+    background: ${theme.white};
+  }
   &:hover {
     background: ${theme.gray[500]};
     color: ${theme.white};
+    &.clear {
+      border: 1px solid transparent;
+      color: ${theme.white};
+      background: ${theme.gray[500]};
+    }
   }
   &:active {
     background: ${theme.gray[700]};

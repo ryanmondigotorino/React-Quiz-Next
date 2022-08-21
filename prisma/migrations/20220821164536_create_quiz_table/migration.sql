@@ -31,6 +31,7 @@ CREATE TABLE "QuizChoices" (
     "description" TEXT NOT NULL,
     "isAnswer" BOOLEAN NOT NULL,
     "quizQuestionsId" TEXT NOT NULL,
+    "quizId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "deletedAt" TIMESTAMP(3),
@@ -43,6 +44,9 @@ ALTER TABLE "Quiz" ADD CONSTRAINT "Quiz_userId_fkey" FOREIGN KEY ("userId") REFE
 
 -- AddForeignKey
 ALTER TABLE "QuizQuestions" ADD CONSTRAINT "QuizQuestions_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "Quiz"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QuizChoices" ADD CONSTRAINT "QuizChoices_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "Quiz"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "QuizChoices" ADD CONSTRAINT "QuizChoices_quizQuestionsId_fkey" FOREIGN KEY ("quizQuestionsId") REFERENCES "QuizQuestions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

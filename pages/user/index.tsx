@@ -3,17 +3,23 @@ import * as cookie from 'cookie';
 import jwtDecode from 'jwt-decode';
 import Link from 'next/link';
 import type { NextPage, GetServerSideProps } from 'next';
+import { useDispatch } from 'react-redux';
 import Wrapper from 'components/User/Wrapper';
 import { User, Quiz } from '@prisma/client';
 import NextSeo from 'components/Utilities/Next-seo';
 import type { SEO, GeneratedToken, TableParams, Pagination } from 'interfaces';
-import { Direction, Text } from 'styles/styled-components/global.styled';
+import { Direction, Text, Tag } from 'styles/styled-components/global.styled';
 import { Wrapper as DashBoardWrapper, Content } from 'styles/styled-components/user/dashboard.styled';
 import { api } from 'utilities/auth';
 import { format } from 'date-fns';
+import { toggleAlert } from 'redux/appSlice';
 import Table from 'components/Table';
 import debounce from 'utilities/debounce';
+import { constructPublishLink } from 'utilities/quiz';
 import Button from 'components/Button';
+import { ReactComponent as DeleteIcon  } from 'styles/assets/delete.svg';
+import { ReactComponent as CopyIcon  } from 'styles/assets/copy-link.svg';
+
 
 const CLIENT_URL = process.env.APP_URL;
 
@@ -22,6 +28,7 @@ type Props = { seo: SEO; user?: User };
 const COLUMNS = ['Date Created', 'Title', 'Status', 'Action'];
 
 const UserDashboard: NextPage<Props> = ({ seo, user }) => {
+  const dispatch = useDispatch();
   const [params, setParams] = React.useState<TableParams>({
     page: 1,
     size: 10,
@@ -49,6 +56,160 @@ const UserDashboard: NextPage<Props> = ({ seo, user }) => {
     }
   };
 
+  const toggleErrordispatch = () => {
+    dispatch(
+      toggleAlert({
+        icon: 'danger',
+        isVisible: true,
+        header: 'Error!',
+        message: 'Issue encountered. Please reload this page.',
+        btn: (
+          <Button
+            type="button"
+            styles={{ width: 133 }}
+            onClick={() =>
+              dispatch(
+                toggleAlert({
+                  isVisible: false,
+                  header: '',
+                  message: '',
+                  btn: null,
+                })
+              )}
+            >
+              Ok
+            </Button> 
+        ),
+      }),
+    );
+  };
+
+  const deleteQuiz = async (quiz: Quiz) => {
+    try {
+      dispatch(
+        toggleAlert({
+          isVisible: false,
+          header: '',
+          message: '',
+          btn: null,
+        })
+      );
+      const payload = { id: quiz.id };
+      const { data: quizData } = await api().delete('/api/quiz', { params: { ...payload }});
+
+      if (quizData?.meta?.status === 'success') {
+        dispatch(
+          toggleAlert({
+            icon: 'success',
+            isVisible: true,
+            header: 'Success!',
+            message: 'Quiz deleted successfully.',
+            btn: (
+              <Button
+                type="button"
+                styles={{ width: 133 }}
+                onClick={() => {
+                  dispatch(
+                    toggleAlert({
+                      isVisible: false,
+                      header: '',
+                      message: '',
+                      btn: null,
+                    })
+                  );
+                  setParams({ ...params });
+                }}
+                >
+                  Ok
+                </Button> 
+            ),
+          }),
+        );
+      }
+    } catch {
+      toggleErrordispatch()
+    }
+  };
+
+  const tableAction = (action: 'delete' | 'copy', value: Quiz) => {
+    switch (action) {
+      case 'delete':
+        dispatch(
+          toggleAlert({
+            icon: 'danger',
+            isVisible: true,
+            header: 'Confirmation',
+            message: 'Are you sure you wanted to delete this quiz? This cannot be undo.',
+            btn: (
+              <Direction.Row className="alert-wrap">
+                <Button
+                  isClear
+                  type="button"
+                  styles={{ width: 133 }}
+                  onClick={() =>
+                    dispatch(
+                      toggleAlert({
+                        isVisible: false,
+                        header: '',
+                        message: '',
+                        btn: null,
+                      })
+                    )}
+                  >
+                    Close
+                  </Button> 
+                <Button
+                  type="button"
+                  styles={{ width: 133 }}
+                  onClick={() => deleteQuiz(value)}
+                  >
+                    Confirm
+                  </Button> 
+              </Direction.Row>
+            ),
+          }),
+        );
+        break;
+      case 'copy':
+        if (value.status === 1) {
+          const input = document.createElement('textarea');
+          /* @ts-ignore */
+          input.innerText = constructPublishLink(value);
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          input.remove();
+          dispatch(
+            toggleAlert({
+              icon: 'success',
+              isVisible: true,
+              header: 'Success!',
+              message: 'Quiz url link copied!',
+              btn: (
+                <Button
+                  type="button"
+                  styles={{ width: 133 }}
+                  onClick={() => {
+                    dispatch(
+                      toggleAlert({
+                        isVisible: false,
+                        header: '',
+                        message: '',
+                        btn: null,
+                      })
+                    );
+                  }}
+                  >
+                    Ok
+                  </Button> 
+              ),
+            }),
+          );
+        }
+        break;
+    }
+  };
+
   React.useEffect(() => {
     setParams({ ...params, page: links.first, search: debouncedSearch });
   }, [debouncedSearch]);
@@ -64,7 +225,16 @@ const UserDashboard: NextPage<Props> = ({ seo, user }) => {
             'Date Created': format(new Date(val.createdAt as unknown as string), 'MMM dd, yyyy'),
             Title: val.title,
             Status: val.status === 0 ? 'Draft' : 'Published',
-            Action: 'Publish',
+            Action: (
+              <Direction.Row>
+                <Tag className="danger mr-10" onClick={() => tableAction('delete', val)}>
+                  <DeleteIcon className="icon icon--tag" />
+                </Tag>
+                <Tag className="success" onClick={() => tableAction('copy', val)}>
+                  <CopyIcon className="icon icon--tag" />
+                </Tag>
+              </Direction.Row>
+            ),
           }));
           setData(tableData);
           setLinks(quizData.links);
@@ -73,12 +243,13 @@ const UserDashboard: NextPage<Props> = ({ seo, user }) => {
         }
         setLoading(false);
       } catch {
-        console.error('something went wrong');
+        toggleErrordispatch();
       }
     };
 
     fetchQuizzes();
   }, [params]);
+
 
   return (
     <Wrapper user={user}>
