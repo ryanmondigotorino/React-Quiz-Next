@@ -12,12 +12,46 @@ const Row = styled.div`
   &.wrap {
     flex-wrap: wrap;
   }
+  &.alert-wrap {
+    justify-content: space-between;
+    padding: 0 50px;
+  }
 `;
 
 export const Direction = {
   Col,
   Row,
 };
+
+
+
+export const Tag = styled.div`
+  padding: 5px;
+  width: max-content;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 300ms;
+  outline: none;
+  color: ${theme.gray[700]};
+  &.danger {
+    background: ${theme.red[300]};
+  }
+  &.success {
+    background: ${theme.green[300]};
+  }
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+  .icon--tag {
+    font-size: 16px;
+  }
+`;
 
 const Title = styled.h1`
   height: 33px;
@@ -53,6 +87,9 @@ const SubTitle = styled.p`
     a {
       color: ${theme.white};
     }
+  }
+  &.heading {
+    font-weight: 700;
   }
   &.dark {
     color: ${theme.grayTeal[500]};

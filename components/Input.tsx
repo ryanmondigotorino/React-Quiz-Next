@@ -7,7 +7,7 @@ type StateProps = 'default' | 'active' | 'error' | 'disabled' | string;
 type Props = {
   type: 'text' | 'number' | 'password' | 'email' | 'calendar' | 'textArea';
   placeholder: string;
-  reference?: void;
+  reference?: any;
   name: string;
   defaultValue?: string;
   errors?: Partial<Record<string, FieldError>>;

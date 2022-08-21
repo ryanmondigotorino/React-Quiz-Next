@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import clsx from 'clsx';
 import ButtonWrapper from 'styles/styled-components/button.styled';
 import { Direction } from 'styles/styled-components/global.styled';
 import Spinner from 'components/Utilities/Spinner';
@@ -9,6 +10,7 @@ type Props = {
   children?: ReactNode;
   disabled?: boolean;
   noSpinner?: boolean;
+  isClear?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
@@ -18,6 +20,7 @@ const Button = ({
   styles,
   noSpinner,
   children,
+  isClear,
   onClick,
 }: Props) => {
   return (
@@ -25,6 +28,7 @@ const Button = ({
       type={type}
       style={styles}
       disabled={disabled}
+      className={clsx({ 'clear': isClear })}
       onClick={onClick}
     >
       {disabled ? (
