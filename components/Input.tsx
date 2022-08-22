@@ -124,7 +124,7 @@ const InputComponent = ({
   React.useEffect(() => {
     if (disabled) {
       setState('disabled');
-    } else if (errors && errors[name]) {
+    } else if (errors?.[name]?.message) {
       setError(errors[name]?.message);
       setState('error');
     } else {

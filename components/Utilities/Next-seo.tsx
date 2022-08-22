@@ -28,10 +28,10 @@ const NextSeoBundle = ({ seo }: Props) => {
   return (
     <React.Fragment>
       <NextSeo
-        description={mainseo?.description || process.env.APP_TITLE || 'Thors Portfolio'}
+        description={mainseo?.description || process.env.APP_NAME || 'Toptal Quiz'}
         nofollow={!isProdMode}
         noindex={!isProdMode}
-        title={mainseo?.title || process.env.APP_TITLE || 'Thors Portfolio'}
+        title={mainseo?.title || process.env.APP_NAME || 'Toptal Quiz'}
       />
       {dynaseo && dynaseo?.length > 0
         ? dynaseo

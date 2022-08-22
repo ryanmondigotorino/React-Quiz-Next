@@ -136,7 +136,7 @@ const UserDashboard: NextPage<Props> = ({ seo, user }) => {
       case 'delete':
         dispatch(
           toggleAlert({
-            icon: 'danger',
+            icon: 'warning',
             isVisible: true,
             header: 'Confirmation',
             message: 'Are you sure you wanted to delete this quiz? This cannot be undo.',

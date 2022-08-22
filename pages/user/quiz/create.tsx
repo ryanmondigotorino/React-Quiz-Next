@@ -181,7 +181,7 @@ const CreateQuiz: NextPage<Props> = ({ seo, user }) => {
                   />
                   <CheckBox
                     data={question.type}
-                    label="Multiple Choice"
+                    label="Multiple Selection"
                     onToggle={(value) => setMultipleChoice(key, value)}
                   />
                 </Direction.Row>

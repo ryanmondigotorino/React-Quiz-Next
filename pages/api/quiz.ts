@@ -24,10 +24,13 @@ type Column = 'title';
 
 handler.get('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const auth = await authorized(req);
-    if (!auth?.id) return res.status(403).json({ message: 'Unauthorized Access (Invalid token credentials)'});
     const params: QueryParams = JSON.parse(JSON.stringify(req.query));
-
+    const auth = await authorized(req);
+  
+    if (!params?.url && !auth?.id) {
+      return res.status(403).json({ message: 'Unauthorized Access (Invalid token credentials)' });
+    }
+  
     const pageNumber: number = params?.page || typeof params.page === 'number' ? Number(params?.page) : 1;
     const pageSize: number = params?.size || typeof params.size === 'number' ? Number(params.size) : 25;
 
@@ -41,7 +44,7 @@ handler.get('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
 
     const searchCondition = params?.search ? { title: { contains: params.search, mode: 'insensitive' }} : undefined
 
-    const defaultCondition = !params?.url ? { where: { userId: auth.id, ...searchCondition }} : undefined;
+    const defaultCondition = !params?.url && auth?.id ? { where: { userId: auth.id, ...searchCondition }} : undefined;
     const conditionalStatement = params?.url ? { where: { url: params.url } } : undefined;
     
     /* @ts-ignore */
@@ -53,11 +56,11 @@ handler.get('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
       orderBy: { [translateSort]: sorting.orientation },
       include: { quizQuestions: { include: { quizChoices: true }} },
     });
-
+    
+    /* @ts-ignore */
     const totalCount = await prisma.quiz.count({
-      where: {
-        userId: auth.id,
-      },
+      ...defaultCondition,
+      ...conditionalStatement,
     });
 
     const last = Math.ceil((Number(totalCount) || 1) / pageSize) || 1;
@@ -80,7 +83,6 @@ handler.get('/api/quiz', async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ message: JSON.stringify(error) });
   }
 });
-
 
 /**
  * @param quiz
@@ -189,7 +191,6 @@ handler.delete('api/quiz', async (req: NextApiRequest, res: NextApiResponse) => 
       }
     });
   } catch (error) {
-    console.log({ error });
     return res.status(500).json({ message: JSON.stringify(error) });
   }
 });
