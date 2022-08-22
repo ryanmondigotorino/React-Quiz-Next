@@ -7,7 +7,7 @@ const store = configureStore({
   middleware: getDefaultMiddleware({
     serializableCheck: {
       ignoredActionPaths: ['payload.children', 'payload.header', 'payload.btn'],
-      ignoredPaths: ['systemApp.modal.children', 'systemApp.modal.header', 'systemApp.alert.btn'],
+      ignoredPaths: ['systemApp.alert.btn'],
     },
   }),
 });

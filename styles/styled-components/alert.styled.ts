@@ -73,6 +73,9 @@ const AlertIcon = styled.div`
     &--danger {
       color: ${theme.red[500]};
     }
+    &--warning {
+      color: ${theme.warning};
+    }
     &--success {
       color: ${theme.green[300]};
     }

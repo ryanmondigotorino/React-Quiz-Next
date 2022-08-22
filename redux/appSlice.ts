@@ -1,14 +1,8 @@
 import React from 'react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface Modal {
-  header?: string;
-  isVisible: boolean;
-  children?: React.ReactElement | null;
-};
-
 export interface Alert {
-  icon?: 'danger' | 'success';
+  icon?: 'danger' | 'success' | 'warning';
   isVisible?: boolean;
   header?: string;
   message?: string;
@@ -16,16 +10,10 @@ export interface Alert {
 };
 
 export type InitialState = {
-  modal?: Modal;
   alert?: Alert;
 };
 
 const initialState: InitialState = {
-  modal: {
-    header: "",
-    isVisible: false,
-    children: null,
-  },
   alert: {
     icon: 'success',
     isVisible: false,
@@ -39,13 +27,6 @@ const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    toggleModal(state, action: PayloadAction<Modal>) {
-      if (state.modal) {
-        state.modal.header = action.payload.header;
-        state.modal.isVisible = action.payload.isVisible;
-        state.modal.children = action.payload.children;
-      }
-    },
     toggleAlert(state, action: PayloadAction<Alert>) {
       if (state.alert) {
         state.alert.icon = action.payload.icon;
@@ -58,6 +39,6 @@ const appSlice = createSlice({
   },
 });
 
-export const { toggleModal, toggleAlert } = appSlice.actions;
+export const { toggleAlert } = appSlice.actions;
 
 export default appSlice.reducer;

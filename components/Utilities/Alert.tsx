@@ -9,6 +9,9 @@ const status = {
   danger: {
     icon: <DangerIcon className="icon icon--danger" />,
   },
+  warning: {
+    icon: <DangerIcon className="icon icon--warning" />,
+  },
   success: {
     icon: <SuccessIcon className="icon icon--success" />,
   },
