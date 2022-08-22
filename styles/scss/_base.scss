@@ -1,0 +1,188 @@
+html,
+body,
+body,
+main {
+  height: calc(100vh - 73px);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  background: #f8f8f8;
+}
+
+.icon {
+  display: inline-block;
+  fill: currentColor;
+  height: 1em;
+  stroke: currentColor;
+  stroke-width: 0;
+  vertical-align: middle;
+  width: 1em;
+}
+
+a {
+  text-decoration: none;
+  color: #747578;
+  font-weight: 600;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  @media (min-width: 576px) {
+    max-width: 540px;
+  }
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+  @media (min-width: 992px) {
+    max-width: 960px;
+  }
+  @media (min-width: 1200px) {
+    max-width: 1262px;
+  }
+}
+
+* {
+  font-family: 'Open Sans';
+  outline: none;
+  outline-color: transparent;
+  &:focus {
+    outline: none;
+    outline-color: transparent;
+  }
+}
+
+.justify-content {
+  &-center {
+    justify-content: center;
+  }
+  &-between {
+    justify-content: space-between;
+  }
+  &-end {
+    justify-content: flex-end;
+  }
+}
+.align-items-center {
+  align-items: center;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-center {
+  text-align: center;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.m {
+  &r-10 {
+    margin-right: 10px;
+  }
+  &b-20 {
+    margin-bottom: 20px;
+  }
+  &b-50 {
+    margin-bottom: 50px !important;
+  }
+  &t-50 {
+    margin-top: 50px !important;
+  }
+  &l-50 {
+    margin-left: 50px;
+  }
+}
+
+.clickable:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.separator {
+  border-bottom: 1px solid #b9bbc2;
+  padding-bottom: 25px;
+}
+
+.flex {
+  &-1 {
+    flex: 1;
+  }
+  &-2 {
+    flex: 2;
+  }
+  &-5 {
+    flex: 5;
+  }
+  &-6 {
+    flex: 6;
+  }
+}
+
+.p {
+  &-3 {
+    padding: 1rem !important;
+  }
+  &-03 {
+    padding: 0 1rem !important;
+  }
+  &-20 {
+    padding: 20px;
+  }
+  &r-15 {
+   padding-right: 15px; 
+  }
+  &l-15 {
+   padding-left: 15px; 
+  }
+}
+
+.w-350 {
+  width: 21.875rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #101820;
+  thead th {
+    vertical-align: bottom;
+    padding: 0.75rem;
+    text-align: start;
+  }
+  td {
+    padding: 0.75rem;
+    vertical-align: top;
+  }
+}
